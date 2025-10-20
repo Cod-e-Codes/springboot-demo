@@ -123,11 +123,11 @@
                                                              (${task.priority.name() == 'MEDIUM'} ? 'bg-info' : 'bg-secondary'))"
                                               th:text="${task.priority.displayName}">Medium</span>
                                     </td>
-                                    <td th:text="${#temporals.format(task.createdAt, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:00</td>
+                                    <td th:text="${#temporals.format(task.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01 10:00</td>
                                     <td>
                                         <span th:if="${task.dueDate != null}" 
                                               th:text="${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}"
-                                              th:class="${task.isOverdue()} ? 'text-danger' : ''">2024-01-01 10:00</span>
+                                              th:class="${task.isOverdue()} ? 'text-danger' : ''">2025-01-01 10:00</span>
                                         <span th:if="${task.dueDate == null}" class="text-muted">No due date</span>
                                     </td>
                                     <td>

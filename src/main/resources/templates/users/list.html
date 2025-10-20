@@ -76,7 +76,7 @@
                                     <td>
                                         <a th:href="'mailto:' + ${user.email}" th:text="${user.email}">john@example.com</a>
                                     </td>
-                                    <td th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:00</td>
+                                    <td th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01 10:00</td>
                                     <td>
                                         <div class="btn-group btn-group-sm" role="group">
                                             <a th:href="@{/users/{id}(id=${user.id})}" class="btn btn-outline-primary" title="View">

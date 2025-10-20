@@ -74,18 +74,18 @@
                             </tr>
                             <tr>
                                 <th>Created:</th>
-                                <td th:text="${#temporals.format(task.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01 10:00:00</td>
+                                <td th:text="${#temporals.format(task.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2025-01-01 10:00:00</td>
                             </tr>
                             <tr>
                                 <th>Last Updated:</th>
-                                <td th:text="${#temporals.format(task.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01 10:00:00</td>
+                                <td th:text="${#temporals.format(task.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2025-01-01 10:00:00</td>
                             </tr>
                             <tr>
                                 <th>Due Date:</th>
                                 <td>
                                     <span th:if="${task.dueDate != null}" 
                                           th:text="${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}"
-                                          th:class="${task.isOverdue()} ? 'text-danger fw-bold' : ''">2024-01-01 10:00</span>
+                                          th:class="${task.isOverdue()} ? 'text-danger fw-bold' : ''">2025-01-01 10:00</span>
                                     <span th:if="${task.dueDate == null}" class="text-muted">No due date set</span>
                                 </td>
                             </tr>

@@ -53,11 +53,11 @@
                             </tr>
                             <tr>
                                 <th>Created:</th>
-                                <td th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01 10:00:00</td>
+                                <td th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2025-01-01 10:00:00</td>
                             </tr>
                             <tr>
                                 <th>Last Updated:</th>
-                                <td th:text="${#temporals.format(user.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01 10:00:00</td>
+                                <td th:text="${#temporals.format(user.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2025-01-01 10:00:00</td>
                             </tr>
                         </table>
                     </div>
@@ -149,7 +149,7 @@
                                                                      ${task.priority.name() == 'MEDIUM'} ? 'bg-info' : 'bg-secondary'"
                                                       th:text="${task.priority.displayName}">Medium</span>
                                             </td>
-                                            <td th:text="${#temporals.format(task.createdAt, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:00</td>
+                                            <td th:text="${#temporals.format(task.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01 10:00</td>
                                             <td>
                                                 <a th:href="@{/tasks/{id}(id=${task.id})}" class="btn btn-sm btn-outline-primary" title="View">
                                                     <i class="bi bi-eye"></i>
