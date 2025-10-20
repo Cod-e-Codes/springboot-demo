@@ -2,6 +2,8 @@
 
 Spring Boot application with REST API and web interface for managing users and tasks.
 
+![Task Management System](screenshot.png)
+
 ## Technology Stack
 
 - Spring Boot 3.5.6
