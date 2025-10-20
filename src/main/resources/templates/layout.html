@@ -21,6 +21,9 @@
         .card:hover {
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
         }
+        [data-bs-theme="dark"] .card:hover {
+            box-shadow: 0 0.5rem 1rem rgba(255, 255, 255, 0.15);
+        }
         .status-badge {
             font-size: 0.875em;
         }
@@ -31,9 +34,16 @@
             background-color: #f8f9fa;
             border-top: 1px solid #dee2e6;
         }
+        [data-bs-theme="dark"] .footer {
+            background-color: #212529;
+            border-top: 1px solid #495057;
+        }
         .sidebar {
             min-height: calc(100vh - 56px);
             background-color: #f8f9fa;
+        }
+        [data-bs-theme="dark"] .sidebar {
+            background-color: #212529;
         }
         .content {
             min-height: calc(100vh - 56px);
@@ -74,6 +84,11 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <button class="btn btn-outline-light btn-sm me-2" id="themeToggle" title="Toggle dark mode">
+                            <i class="bi bi-moon" id="themeIcon"></i>
+                        </button>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/h2-console" target="_blank">
                             <i class="bi bi-database me-1"></i>Database
@@ -171,6 +186,40 @@
                 bsAlert.close();
             });
         }, 5000);
+
+        // Dark mode toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const html = document.documentElement;
+            
+            // Check for saved theme preference or default to 'light'
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-bs-theme', currentTheme);
+            
+            // Update icon based on current theme
+            updateThemeIcon(currentTheme);
+            
+            // Toggle theme when button is clicked
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = html.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                html.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                if (theme === 'dark') {
+                    themeIcon.className = 'bi bi-sun';
+                    themeToggle.title = 'Switch to light mode';
+                } else {
+                    themeIcon.className = 'bi bi-moon';
+                    themeToggle.title = 'Switch to dark mode';
+                }
+            }
+        });
     </script>
     
     <!-- Page-specific scripts -->
