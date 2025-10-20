@@ -26,7 +26,8 @@ Spring Boot application with REST API and web interface for managing users and t
 - Overdue task detection
 - Search functionality
 - REST API endpoints with DTOs
-- Responsive web interface
+- Responsive web interface with dark mode toggle
+- Auto-filtering functionality
 - Sample data initialization
 
 ## Running the Application
