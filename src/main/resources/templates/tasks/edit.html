@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Edit Task - Task Management System</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-pencil me-2"></i>Edit Task
+            </h1>
+            <div>
+                <a th:href="@{/tasks/{id}(id=${task.id})}" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-eye me-1"></i>View
+                </a>
+                <a href="/tasks" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Tasks
+                </a>
+            </div>
+        </div>
+
+        <!-- Edit Task Form -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-list-task me-2"></i>Task Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/tasks/{id}/edit(id=${task.id})}" th:object="${task}" method="post">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="title" th:field="*{title}" 
+                                               placeholder="Enter task title" required>
+                                        <div class="form-text">Task title must be 3-200 characters long.</div>
+                                        <div th:if="${#fields.hasErrors('title')}" class="text-danger">
+                                            <span th:errors="*{title}">Title error</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="priority" class="form-label">Priority</label>
+                                        <select class="form-select" id="priority" th:field="*{priority}">
+                                            <option th:each="priority : ${taskPriorities}" 
+                                                    th:value="${priority.name()}" 
+                                                    th:text="${priority.displayName}">Medium</option>
+                                        </select>
+                                        <div th:if="${#fields.hasErrors('priority')}" class="text-danger">
+                                            <span th:errors="*{priority}">Priority error</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" th:field="*{description}" 
+                                          rows="4" placeholder="Enter task description"></textarea>
+                                <div class="form-text">Description can be up to 1000 characters long.</div>
+                                <div th:if="${#fields.hasErrors('description')}" class="text-danger">
+                                    <span th:errors="*{description}">Description error</span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="status" class="form-label">Status</label>
+                                        <select class="form-select" id="status" th:field="*{status}">
+                                            <option th:each="status : ${taskStatuses}" 
+                                                    th:value="${status.name()}" 
+                                                    th:text="${status.displayName}">Pending</option>
+                                        </select>
+                                        <div th:if="${#fields.hasErrors('status')}" class="text-danger">
+                                            <span th:errors="*{status}">Status error</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="user" class="form-label">Assigned User <span class="text-danger">*</span></label>
+                                        <select class="form-select" id="user" th:field="*{user}" required>
+                                            <option value="">Select a user...</option>
+                                            <option th:each="user : ${users}" 
+                                                    th:value="${user.id}" 
+                                                    th:text="${user.fullName + ' (' + user.username + ')'}">John Doe (john_doe)</option>
+                                        </select>
+                                        <div th:if="${#fields.hasErrors('user')}" class="text-danger">
+                                            <span th:errors="*{user}">User error</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <a th:href="@{/tasks/{id}(id=${task.id})}" class="btn btn-outline-secondary me-2">
+                                        <i class="bi bi-eye me-1"></i>View Task
+                                    </a>
+                                    <a href="/tasks" class="btn btn-outline-secondary">
+                                        <i class="bi bi-arrow-left me-1"></i>Cancel
+                                    </a>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-1"></i>Update Task
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

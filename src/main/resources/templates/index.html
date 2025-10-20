@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Dashboard - Task Management System</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-speedometer2 me-2"></i>Dashboard
+            </h1>
+            <div>
+                <a href="/tasks/create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>New Task
+                </a>
+                <a href="/users/create" class="btn btn-outline-primary ms-2">
+                    <i class="bi bi-person-plus me-1"></i>New User
+                </a>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-white-50">Total Users</h6>
+                                <h3 class="mb-0" th:text="${totalUsers}">0</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-people fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-white-50">Total Tasks</h6>
+                                <h3 class="mb-0" th:text="${totalTasks}">0</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-list-task fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-white-50">Completed</h6>
+                                <h3 class="mb-0" th:text="${completedTasks}">0</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-check-circle fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-white-50">Overdue</h6>
+                                <h3 class="mb-0" th:text="${overdueTasks}">0</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-exclamation-triangle fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-lightning me-2"></i>Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="/tasks/create" class="btn btn-outline-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Create New Task
+                            </a>
+                            <a href="/users/create" class="btn btn-outline-success">
+                                <i class="bi bi-person-plus me-2"></i>Add New User
+                            </a>
+                            <a href="/tasks/overdue" class="btn btn-outline-warning">
+                                <i class="bi bi-exclamation-triangle me-2"></i>View Overdue Tasks
+                            </a>
+                            <a href="/tasks/search" class="btn btn-outline-info">
+                                <i class="bi bi-search me-2"></i>Search Tasks
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-code-slash me-2"></i>API Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">This application provides REST APIs for programmatic access:</p>
+                        <ul class="list-unstyled">
+                            <li><strong>Users API:</strong> <code>/api/users</code></li>
+                            <li><strong>Tasks API:</strong> <code>/api/tasks</code></li>
+                        </ul>
+                        <div class="mt-3">
+                            <a href="/h2-console" class="btn btn-sm btn-outline-secondary me-2" target="_blank">
+                                <i class="bi bi-database me-1"></i>Database Console
+                            </a>
+                            <a href="/actuator/health" class="btn btn-sm btn-outline-secondary" target="_blank">
+                                <i class="bi bi-heart-pulse me-1"></i>Health Check
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Section -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-clock-history me-2"></i>System Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6>Technology Stack</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Spring Boot 3.5.6</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Java 21</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Spring Data JPA</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>H2 Database</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Thymeleaf</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Bootstrap 5</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Features</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>REST API</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Web Interface</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Data Validation</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Database Relationships</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Error Handling</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Responsive Design</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Architecture</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>MVC Pattern</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Service Layer</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Repository Pattern</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Entity Relationships</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Transaction Management</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Dependency Injection</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

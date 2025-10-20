@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Users - Task Management System</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-people me-2"></i>Users
+            </h1>
+            <div>
+                <a href="/users/create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>Add User
+                </a>
+            </div>
+        </div>
+
+        <!-- Search Form -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" action="/users/search" class="row g-3">
+                    <div class="col-md-8">
+                        <input type="text" name="name" class="form-control" placeholder="Search users by full name..." th:value="${searchTerm}">
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-outline-primary me-2">
+                            <i class="bi bi-search me-1"></i>Search
+                        </button>
+                        <a href="/users" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i>Clear
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-table me-2"></i>User List
+                    <span th:if="${searchTerm}" class="text-muted">- Search results for: "<span th:text="${searchTerm}"></span>"</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${users != null and users.empty}" class="text-center py-4">
+                    <i class="bi bi-person-x fs-1 text-muted"></i>
+                    <p class="text-muted mt-2">No users found.</p>
+                    <a href="/users/create" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-1"></i>Add First User
+                    </a>
+                </div>
+                
+                <div th:if="${users != null and !users.empty}">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="user : ${users}">
+                                    <td th:text="${user.id}">1</td>
+                                    <td>
+                                        <strong th:text="${user.username}">john_doe</strong>
+                                    </td>
+                                    <td th:text="${user.fullName}">John Doe</td>
+                                    <td>
+                                        <a th:href="'mailto:' + ${user.email}" th:text="${user.email}">john@example.com</a>
+                                    </td>
+                                    <td th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:00</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a th:href="@{/users/{id}(id=${user.id})}" class="btn btn-outline-primary" title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a th:href="@{/users/{id}/edit(id=${user.id})}" class="btn btn-outline-secondary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-danger" 
+                                                    th:onclick="'confirmDelete(' + ${user.id} + ')'" title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this user? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div layout:fragment="scripts">
+        <script>
+            function confirmDelete(userId) {
+                document.getElementById('deleteForm').action = '/users/' + userId + '/delete';
+                new bootstrap.Modal(document.getElementById('deleteModal')).show();
+            }
+        </script>
+    </div>
+</body>
+</html>

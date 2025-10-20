@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Task Details - Task Management System</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-list-task me-2"></i>Task Details
+            </h1>
+            <div>
+                <a th:href="@{/tasks/{id}/edit(id=${task.id})}" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-pencil me-1"></i>Edit
+                </a>
+                <a href="/tasks" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Tasks
+                </a>
+            </div>
+        </div>
+
+        <!-- Task Information -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-list-task me-2"></i>Task Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th width="30%">ID:</th>
+                                <td th:text="${task.id}">1</td>
+                            </tr>
+                            <tr>
+                                <th>Title:</th>
+                                <td>
+                                    <strong th:text="${task.title}">Sample Task</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Description:</th>
+                                <td th:text="${task.description} ?: 'No description provided'">Task description</td>
+                            </tr>
+                            <tr>
+                                <th>Status:</th>
+                                <td>
+                                    <span class="badge status-badge" 
+                                          th:classappend="${task.status.name() == 'COMPLETED'} ? 'bg-success' : 
+                                                         (${task.status.name() == 'IN_PROGRESS'} ? 'bg-primary' : 
+                                                         (${task.status.name() == 'PENDING'} ? 'bg-warning' : 'bg-secondary'))"
+                                          th:text="${task.status.displayName}">Pending</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Priority:</th>
+                                <td>
+                                    <span class="badge priority-badge" 
+                                          th:classappend="${task.priority.name() == 'URGENT'} ? 'bg-danger' : 
+                                                         (${task.priority.name() == 'HIGH'} ? 'bg-warning' : 
+                                                         (${task.priority.name() == 'MEDIUM'} ? 'bg-info' : 'bg-secondary'))"
+                                          th:text="${task.priority.displayName}">Medium</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Assigned to:</th>
+                                <td>
+                                    <a th:href="@{/users/{id}(id=${task.user.id})}" th:text="${task.user.fullName}">John Doe</a>
+                                    <small class="text-muted">(<span th:text="${task.user.username}">john_doe</span>)</small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Created:</th>
+                                <td th:text="${#temporals.format(task.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01 10:00:00</td>
+                            </tr>
+                            <tr>
+                                <th>Last Updated:</th>
+                                <td th:text="${#temporals.format(task.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01 10:00:00</td>
+                            </tr>
+                            <tr>
+                                <th>Due Date:</th>
+                                <td>
+                                    <span th:if="${task.dueDate != null}" 
+                                          th:text="${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}"
+                                          th:class="${task.isOverdue()} ? 'text-danger fw-bold' : ''">2024-01-01 10:00</span>
+                                    <span th:if="${task.dueDate == null}" class="text-muted">No due date set</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-gear me-2"></i>Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a th:href="@{/tasks/{id}/edit(id=${task.id})}" class="btn btn-outline-primary">
+                                <i class="bi bi-pencil me-2"></i>Edit Task
+                            </a>
+                            
+                            <div th:if="${task.status.name() != 'COMPLETED'}">
+                                <form th:action="@{/tasks/{id}/complete(id=${task.id})}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="bi bi-check-circle me-2"></i>Mark as Complete
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-arrow-repeat me-2"></i>Change Status
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" th:onclick="'changeStatus(' + ${task.id} + ', \'PENDING\')'">Pending</a></li>
+                                    <li><a class="dropdown-item" href="#" th:onclick="'changeStatus(' + ${task.id} + ', \'IN_PROGRESS\')'">In Progress</a></li>
+                                    <li><a class="dropdown-item" href="#" th:onclick="'changeStatus(' + ${task.id} + ', \'COMPLETED\')'">Completed</a></li>
+                                    <li><a class="dropdown-item" href="#" th:onclick="'changeStatus(' + ${task.id} + ', \'CANCELLED\')'">Cancelled</a></li>
+                                </ul>
+                            </div>
+                            
+                            <button type="button" class="btn btn-outline-danger" 
+                                    th:onclick="'confirmDelete(' + ${task.id} + ')'">
+                                <i class="bi bi-trash me-2"></i>Delete Task
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task Status Info -->
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="bi bi-info-circle me-2"></i>Status Information
+                        </h6>
+                        <div th:if="${task.isOverdue()}" class="alert alert-warning" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            This task is overdue!
+                        </div>
+                        <div th:if="${task.isCompleted()}" class="alert alert-success" role="alert">
+                            <i class="bi bi-check-circle me-2"></i>
+                            This task has been completed.
+                        </div>
+                        <div th:if="${!task.isCompleted() and !task.isOverdue()}" class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>
+                            This task is in progress.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this task? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div layout:fragment="scripts">
+        <script>
+            function confirmDelete(taskId) {
+                document.getElementById('deleteForm').action = '/tasks/' + taskId + '/delete';
+                new bootstrap.Modal(document.getElementById('deleteModal')).show();
+            }
+            
+            function changeStatus(taskId, status) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/tasks/' + taskId + '/status';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'status';
+                input.value = status;
+                
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        </script>
+    </div>
+</body>
+</html>

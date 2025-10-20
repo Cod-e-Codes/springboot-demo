@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Search Tasks - Task Management System</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-search me-2"></i>Search Tasks
+            </h1>
+            <a href="/tasks" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back to Tasks
+            </a>
+        </div>
+
+        <!-- Search Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-search me-2"></i>Search Options
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="get" action="/tasks/search" class="row g-3">
+                    <div class="col-md-6">
+                        <label for="title" class="form-label">Search by Title</label>
+                        <input type="text" name="title" id="title" class="form-control" 
+                               placeholder="Enter task title..." th:value="${titleSearch}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="description" class="form-label">Search by Description</label>
+                        <input type="text" name="description" id="description" class="form-control" 
+                               placeholder="Enter description keywords..." th:value="${descriptionSearch}">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="bi bi-search me-1"></i>Search
+                        </button>
+                        <a href="/tasks/search" class="btn btn-outline-secondary me-2">
+                            <i class="bi bi-x-circle me-1"></i>Clear
+                        </a>
+                        <a href="/tasks" class="btn btn-outline-info">
+                            <i class="bi bi-list-task me-1"></i>View All Tasks
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-list-task me-2"></i>Search Results
+                    <span th:if="${searchTerm}" class="text-muted">- Results for: "<span th:text="${searchTerm}"></span>"</span>
+                    <span th:if="${searchType}" class="text-muted"> (by <span th:text="${searchType}"></span>)</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${tasks != null and tasks.empty}" class="text-center py-4">
+                    <i class="bi bi-search fs-1 text-muted"></i>
+                    <p class="text-muted mt-2">No tasks found matching your search criteria.</p>
+                    <p class="text-muted">Try adjusting your search terms or <a href="/tasks">view all tasks</a>.</p>
+                </div>
+                
+                <div th:if="${tasks != null and !tasks.empty}">
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Found <strong th:text="${tasks.size()}">0</strong> task(s) matching your search.
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>User</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    <th>Created</th>
+                                    <th>Due Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="task : ${tasks}">
+                                    <td th:text="${task.id}">1</td>
+                                    <td>
+                                        <a th:href="@{/tasks/{id}(id=${task.id})}" th:text="${task.title}">Sample Task</a>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/users/{id}(id=${task.user.id})}" th:text="${task.user.fullName}">John Doe</a>
+                                    </td>
+                                    <td>
+                                        <span class="badge status-badge" 
+                                              th:classappend="${task.status.name() == 'COMPLETED'} ? 'bg-success' : 
+                                                             (${task.status.name() == 'IN_PROGRESS'} ? 'bg-primary' : 
+                                                             (${task.status.name() == 'PENDING'} ? 'bg-warning' : 'bg-secondary'))"
+                                              th:text="${task.status.displayName}">Pending</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge priority-badge" 
+                                              th:classappend="${task.priority.name() == 'URGENT'} ? 'bg-danger' : 
+                                                             (${task.priority.name() == 'HIGH'} ? 'bg-warning' : 
+                                                             (${task.priority.name() == 'MEDIUM'} ? 'bg-info' : 'bg-secondary'))"
+                                              th:text="${task.priority.displayName}">Medium</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(task.createdAt, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:00</td>
+                                    <td>
+                                        <span th:if="${task.dueDate != null}" 
+                                              th:text="${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}"
+                                              th:class="${task.isOverdue()} ? 'text-danger' : ''">2024-01-01 10:00</span>
+                                        <span th:if="${task.dueDate == null}" class="text-muted">No due date</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a th:href="@{/tasks/{id}(id=${task.id})}" class="btn btn-outline-primary" title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a th:href="@{/tasks/{id}/edit(id=${task.id})}" class="btn btn-outline-secondary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div th:if="${tasks == null}" class="text-center py-4">
+                    <i class="bi bi-search fs-1 text-muted"></i>
+                    <p class="text-muted mt-2">Use the search form above to find tasks.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

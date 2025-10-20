@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Tasks - Task Management System</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-list-task me-2"></i>Tasks
+            </h1>
+            <div>
+                <a href="/tasks/create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>Add Task
+                </a>
+            </div>
+        </div>
+
+        <!-- Filter Form -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" action="/tasks" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="userId" class="form-label">User</label>
+                        <select name="userId" id="userId" class="form-select">
+                            <option value="">All Users</option>
+                            <option th:each="user : ${users}" 
+                                    th:value="${user.id}" 
+                                    th:text="${user.fullName}"
+                                    th:selected="${selectedUserId != null and selectedUserId == user.id}">
+                                User Name
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">All Statuses</option>
+                            <option th:each="status : ${taskStatuses}" 
+                                    th:value="${status.name()}" 
+                                    th:text="${status.displayName}"
+                                    th:selected="${selectedStatus != null and selectedStatus.name() == status.name()}">
+                                Status
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="priority" class="form-label">Priority</label>
+                        <select name="priority" id="priority" class="form-select">
+                            <option value="">All Priorities</option>
+                            <option th:each="priority : ${taskPriorities}" 
+                                    th:value="${priority.name()}" 
+                                    th:text="${priority.displayName}"
+                                    th:selected="${selectedPriority != null and selectedPriority.name() == priority.name()}">
+                                Priority
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="bi bi-funnel me-1"></i>Filter
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tasks Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-table me-2"></i>Task List
+                </h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${tasks != null and tasks.empty}" class="text-center py-4">
+                    <i class="bi bi-list-task fs-1 text-muted"></i>
+                    <p class="text-muted mt-2">No tasks found.</p>
+                    <a href="/tasks/create" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-1"></i>Add First Task
+                    </a>
+                </div>
+                
+                <div th:if="${tasks != null and !tasks.empty}">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>User</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    <th>Created</th>
+                                    <th>Due Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="task : ${tasks}">
+                                    <td th:text="${task.id}">1</td>
+                                    <td>
+                                        <a th:href="@{/tasks/{id}(id=${task.id})}" th:text="${task.title}">Sample Task</a>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/users/{id}(id=${task.user.id})}" th:text="${task.user.fullName}">John Doe</a>
+                                    </td>
+                                    <td>
+                                        <span class="badge status-badge" 
+                                              th:classappend="${task.status.name() == 'COMPLETED'} ? 'bg-success' : 
+                                                             (${task.status.name() == 'IN_PROGRESS'} ? 'bg-primary' : 
+                                                             (${task.status.name() == 'PENDING'} ? 'bg-warning' : 'bg-secondary'))"
+                                              th:text="${task.status.displayName}">Pending</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge priority-badge" 
+                                              th:classappend="${task.priority.name() == 'URGENT'} ? 'bg-danger' : 
+                                                             (${task.priority.name() == 'HIGH'} ? 'bg-warning' : 
+                                                             (${task.priority.name() == 'MEDIUM'} ? 'bg-info' : 'bg-secondary'))"
+                                              th:text="${task.priority.displayName}">Medium</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(task.createdAt, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:00</td>
+                                    <td>
+                                        <span th:if="${task.dueDate != null}" 
+                                              th:text="${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}"
+                                              th:class="${task.isOverdue()} ? 'text-danger' : ''">2024-01-01 10:00</span>
+                                        <span th:if="${task.dueDate == null}" class="text-muted">No due date</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a th:href="@{/tasks/{id}(id=${task.id})}" class="btn btn-outline-primary" title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a th:href="@{/tasks/{id}/edit(id=${task.id})}" class="btn btn-outline-secondary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-danger" 
+                                                    th:onclick="'confirmDelete(' + ${task.id} + ')'" title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this task? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div layout:fragment="scripts">
+        <script>
+            function confirmDelete(taskId) {
+                document.getElementById('deleteForm').action = '/tasks/' + taskId + '/delete';
+                new bootstrap.Modal(document.getElementById('deleteModal')).show();
+            }
+        </script>
+    </div>
+</body>
+</html>

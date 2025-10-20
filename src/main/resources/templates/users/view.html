@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>User Details - Task Management System</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-person me-2"></i>User Details
+            </h1>
+            <div>
+                <a th:href="@{/users/{id}/edit(id=${user.id})}" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-pencil me-1"></i>Edit
+                </a>
+                <a href="/users" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Users
+                </a>
+            </div>
+        </div>
+
+        <!-- User Information -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-person me-2"></i>User Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th width="30%">ID:</th>
+                                <td th:text="${user.id}">1</td>
+                            </tr>
+                            <tr>
+                                <th>Username:</th>
+                                <td>
+                                    <strong th:text="${user.username}">john_doe</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Full Name:</th>
+                                <td th:text="${user.fullName}">John Doe</td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>
+                                    <a th:href="'mailto:' + ${user.email}" th:text="${user.email}">john@example.com</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Created:</th>
+                                <td th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01 10:00:00</td>
+                            </tr>
+                            <tr>
+                                <th>Last Updated:</th>
+                                <td th:text="${#temporals.format(user.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01 10:00:00</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-list-task me-2"></i>Task Statistics
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${user.tasks != null and !user.tasks.empty}">
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <div class="border-end">
+                                        <h4 class="text-primary" th:text="${user.tasks.size()}">0</h4>
+                                        <small class="text-muted">Total Tasks</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <h4 class="text-success" th:text="${user.tasks.?[status.name() == 'COMPLETED'].size()}">0</h4>
+                                    <small class="text-muted">Completed</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${user.tasks == null or user.tasks.empty}" class="text-center text-muted">
+                            <i class="bi bi-list-task fs-1"></i>
+                            <p class="mt-2">No tasks assigned yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User's Tasks -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-list-task me-2"></i>Tasks
+                        </h5>
+                        <a th:href="@{/tasks/create?userId={id}(id=${user.id})}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-plus-circle me-1"></i>Add Task
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${user.tasks != null and user.tasks.empty}" class="text-center py-4">
+                            <i class="bi bi-list-task fs-1 text-muted"></i>
+                            <p class="text-muted mt-2">No tasks assigned to this user.</p>
+                            <a th:href="@{/tasks/create?userId={id}(id=${user.id})}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-1"></i>Create First Task
+                            </a>
+                        </div>
+                        
+                        <div th:if="${user.tasks != null and !user.tasks.empty}">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Title</th>
+                                            <th>Status</th>
+                                            <th>Priority</th>
+                                            <th>Created</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="task : ${user.tasks}">
+                                            <td th:text="${task.id}">1</td>
+                                            <td>
+                                                <a th:href="@{/tasks/{id}(id=${task.id})}" th:text="${task.title}">Sample Task</a>
+                                            </td>
+                                            <td>
+                                                <span class="badge status-badge" 
+                                                      th:classappend="${task.status.name() == 'COMPLETED'} ? 'bg-success' : 
+                                                                     ${task.status.name() == 'IN_PROGRESS'} ? 'bg-primary' : 
+                                                                     ${task.status.name() == 'PENDING'} ? 'bg-warning' : 'bg-secondary'"
+                                                      th:text="${task.status.displayName}">Pending</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge priority-badge" 
+                                                      th:classappend="${task.priority.name() == 'URGENT'} ? 'bg-danger' : 
+                                                                     ${task.priority.name() == 'HIGH'} ? 'bg-warning' : 
+                                                                     ${task.priority.name() == 'MEDIUM'} ? 'bg-info' : 'bg-secondary'"
+                                                      th:text="${task.priority.displayName}">Medium</span>
+                                            </td>
+                                            <td th:text="${#temporals.format(task.createdAt, 'yyyy-MM-dd HH:mm')}">2024-01-01 10:00</td>
+                                            <td>
+                                                <a th:href="@{/tasks/{id}(id=${task.id})}" class="btn btn-sm btn-outline-primary" title="View">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
