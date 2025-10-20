@@ -137,16 +137,16 @@
                                             </td>
                                             <td>
                                                 <span class="badge status-badge" 
-                                                      th:classappend="${task.status.name() == 'COMPLETED'} ? 'bg-success' : 
-                                                                     ${task.status.name() == 'IN_PROGRESS'} ? 'bg-primary' : 
-                                                                     ${task.status.name() == 'PENDING'} ? 'bg-warning' : 'bg-secondary'"
+                                                      th:classappend="${task.status.name() == 'COMPLETED'} ? 'bg-success' :
+                                                                     (${task.status.name() == 'IN_PROGRESS'} ? 'bg-primary' :
+                                                                     (${task.status.name() == 'PENDING'} ? 'bg-warning' : 'bg-secondary'))"
                                                       th:text="${task.status.displayName}">Pending</span>
                                             </td>
                                             <td>
                                                 <span class="badge priority-badge" 
-                                                      th:classappend="${task.priority.name() == 'URGENT'} ? 'bg-danger' : 
-                                                                     ${task.priority.name() == 'HIGH'} ? 'bg-warning' : 
-                                                                     ${task.priority.name() == 'MEDIUM'} ? 'bg-info' : 'bg-secondary'"
+                                                      th:classappend="${task.priority.name() == 'URGENT'} ? 'bg-danger' :
+                                                                     (${task.priority.name() == 'HIGH'} ? 'bg-warning' :
+                                                                     (${task.priority.name() == 'MEDIUM'} ? 'bg-info' : 'bg-secondary'))"
                                                       th:text="${task.priority.displayName}">Medium</span>
                                             </td>
                                             <td th:text="${#temporals.format(task.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01 10:00</td>
