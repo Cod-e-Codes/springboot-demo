@@ -1,5 +1,6 @@
 package com.example.demo.controller.api;
 
+import com.example.demo.dto.TaskDTO;
 import com.example.demo.model.Task;
 import com.example.demo.model.TaskPriority;
 import com.example.demo.model.TaskStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -32,52 +34,70 @@ public class TaskApiController {
     
     // GET /api/tasks - Get all tasks
     @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks() {
+    public ResponseEntity<List<TaskDTO>> getAllTasks() {
         List<Task> tasks = taskService.findAll();
-        return ResponseEntity.ok(tasks);
+        List<TaskDTO> taskDTOs = tasks.stream()
+                .map(TaskDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskDTOs);
     }
     
     // GET /api/tasks/{id} - Get task by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
+    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long id) {
         Optional<Task> task = taskService.findById(id);
-        return task.map(ResponseEntity::ok)
-                  .orElse(ResponseEntity.notFound().build());
+        return task.map(t -> ResponseEntity.ok(new TaskDTO(t)))
+                .orElse(ResponseEntity.notFound().build());
     }
     
     // GET /api/tasks/user/{userId} - Get tasks by user ID
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Task>> getTasksByUser(@PathVariable Long userId) {
+    public ResponseEntity<List<TaskDTO>> getTasksByUser(@PathVariable Long userId) {
         List<Task> tasks = taskService.findByUser(userId);
-        return ResponseEntity.ok(tasks);
+        List<TaskDTO> taskDTOs = tasks.stream()
+                .map(TaskDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskDTOs);
     }
     
     // GET /api/tasks/status/{status} - Get tasks by status
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<Task>> getTasksByStatus(@PathVariable TaskStatus status) {
+    public ResponseEntity<List<TaskDTO>> getTasksByStatus(@PathVariable TaskStatus status) {
         List<Task> tasks = taskService.findByStatus(status);
-        return ResponseEntity.ok(tasks);
+        List<TaskDTO> taskDTOs = tasks.stream()
+                .map(TaskDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskDTOs);
     }
     
     // GET /api/tasks/priority/{priority} - Get tasks by priority
     @GetMapping("/priority/{priority}")
-    public ResponseEntity<List<Task>> getTasksByPriority(@PathVariable TaskPriority priority) {
+    public ResponseEntity<List<TaskDTO>> getTasksByPriority(@PathVariable TaskPriority priority) {
         List<Task> tasks = taskService.findByPriority(priority);
-        return ResponseEntity.ok(tasks);
+        List<TaskDTO> taskDTOs = tasks.stream()
+                .map(TaskDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskDTOs);
     }
     
     // GET /api/tasks/user/{userId}/status/{status} - Get tasks by user and status
     @GetMapping("/user/{userId}/status/{status}")
-    public ResponseEntity<List<Task>> getTasksByUserAndStatus(@PathVariable Long userId, @PathVariable TaskStatus status) {
+    public ResponseEntity<List<TaskDTO>> getTasksByUserAndStatus(@PathVariable Long userId, @PathVariable TaskStatus status) {
         List<Task> tasks = taskService.findByUserAndStatus(userId, status);
-        return ResponseEntity.ok(tasks);
+        List<TaskDTO> taskDTOs = tasks.stream()
+                .map(TaskDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskDTOs);
     }
     
     // GET /api/tasks/overdue - Get overdue tasks
     @GetMapping("/overdue")
-    public ResponseEntity<List<Task>> getOverdueTasks() {
+    public ResponseEntity<List<TaskDTO>> getOverdueTasks() {
         List<Task> tasks = taskService.findOverdueTasks();
-        return ResponseEntity.ok(tasks);
+        List<TaskDTO> taskDTOs = tasks.stream()
+                .map(TaskDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskDTOs);
     }
     
     // POST /api/tasks - Create new task
@@ -85,7 +105,7 @@ public class TaskApiController {
     public ResponseEntity<?> createTask(@Valid @RequestBody Task task) {
         try {
             Task createdTask = taskService.createTask(task);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new TaskDTO(createdTask));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
@@ -103,8 +123,8 @@ public class TaskApiController {
             if (!userService.findById(userId).isPresent()) {
                 return ResponseEntity.badRequest().body(new ErrorResponse("User not found with id: " + userId));
             }
-            Task task = taskService.createTaskForUser(userId, title, description, priority);
-            return ResponseEntity.status(HttpStatus.CREATED).body(task);
+                Task task = taskService.createTaskForUser(userId, title, description, priority);
+                return ResponseEntity.status(HttpStatus.CREATED).body(new TaskDTO(task));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }

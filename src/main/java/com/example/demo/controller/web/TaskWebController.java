@@ -54,6 +54,7 @@ public class TaskWebController {
         }
         
         List<User> users = userService.findAll();
+        model.addAttribute("pageTitle", "Tasks");
         model.addAttribute("tasks", tasks);
         model.addAttribute("users", users);
         model.addAttribute("selectedUserId", userId);
@@ -67,6 +68,7 @@ public class TaskWebController {
     
     @GetMapping("/create")
     public String createTaskForm(Model model) {
+        model.addAttribute("pageTitle", "Create Task");
         model.addAttribute("task", new Task());
         model.addAttribute("users", userService.findAll());
         model.addAttribute("taskPriorities", TaskPriority.values());
@@ -96,6 +98,7 @@ public class TaskWebController {
     public String viewTask(@PathVariable Long id, Model model) {
         Task task = taskService.findById(id)
             .orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
+        model.addAttribute("pageTitle", "Task Details");
         model.addAttribute("task", task);
         return "tasks/view";
     }
@@ -167,6 +170,7 @@ public class TaskWebController {
     @GetMapping("/overdue")
     public String overdueTasks(Model model) {
         List<Task> overdueTasks = taskService.findOverdueTasks();
+        model.addAttribute("pageTitle", "Overdue Tasks");
         model.addAttribute("tasks", overdueTasks);
         model.addAttribute("isOverdueView", true);
         return "tasks/overdue";
@@ -192,6 +196,7 @@ public class TaskWebController {
             tasks = taskService.findAll();
         }
         
+        model.addAttribute("pageTitle", "Search Tasks");
         model.addAttribute("tasks", tasks);
         model.addAttribute("searchTerm", searchTerm);
         model.addAttribute("searchType", searchType);

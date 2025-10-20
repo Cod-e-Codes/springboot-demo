@@ -27,6 +27,7 @@ public class HomeController {
         long completedTasks = taskService.findByStatus(com.example.demo.model.TaskStatus.COMPLETED).size();
         long overdueTasks = taskService.findOverdueTasks().size();
         
+        model.addAttribute("pageTitle", "Dashboard");
         model.addAttribute("totalUsers", totalUsers);
         model.addAttribute("totalTasks", totalTasks);
         model.addAttribute("completedTasks", completedTasks);

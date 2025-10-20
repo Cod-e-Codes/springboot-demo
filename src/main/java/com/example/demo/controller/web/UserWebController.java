@@ -25,12 +25,14 @@ public class UserWebController {
     @GetMapping
     public String listUsers(Model model) {
         List<User> users = userService.findAll();
+        model.addAttribute("pageTitle", "Users");
         model.addAttribute("users", users);
         return "users/list";
     }
     
     @GetMapping("/create")
     public String createUserForm(Model model) {
+        model.addAttribute("pageTitle", "Create User");
         model.addAttribute("user", new User());
         return "users/create";
     }
@@ -54,6 +56,7 @@ public class UserWebController {
     public String viewUser(@PathVariable Long id, Model model) {
         User user = userService.findById(id)
             .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        model.addAttribute("pageTitle", "User Details");
         model.addAttribute("user", user);
         return "users/view";
     }
