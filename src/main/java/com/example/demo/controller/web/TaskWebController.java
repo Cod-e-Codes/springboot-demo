@@ -44,7 +44,11 @@ public class TaskWebController {
             User user = userService.findById(userId).orElse(null);
             model.addAttribute("selectedUser", user);
         } else {
-            tasks = taskService.findAll();
+            if (status != null) {
+                tasks = taskService.findByStatus(status);
+            } else {
+                tasks = taskService.findAll();
+            }
         }
         
         if (priority != null) {

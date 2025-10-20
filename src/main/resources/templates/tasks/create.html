@@ -63,16 +63,30 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="user" class="form-label">Assigned User <span class="text-danger">*</span></label>
-                                <select class="form-select" id="user" th:field="*{user}" required>
-                                    <option value="">Select a user...</option>
-                                    <option th:each="user : ${users}" 
-                                            th:value="${user.id}" 
-                                            th:text="${user.fullName + ' (' + user.username + ')'}">John Doe (john_doe)</option>
-                                </select>
-                                <div th:if="${#fields.hasErrors('user')}" class="text-danger">
-                                    <span th:errors="*{user}">User error</span>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="user" class="form-label">Assigned User <span class="text-danger">*</span></label>
+                                        <select class="form-select" id="user" th:field="*{user}" required>
+                                            <option value="">Select a user...</option>
+                                            <option th:each="user : ${users}" 
+                                                    th:value="${user.id}" 
+                                                    th:text="${user.fullName + ' (' + user.username + ')'}">John Doe (john_doe)</option>
+                                        </select>
+                                        <div th:if="${#fields.hasErrors('user')}" class="text-danger">
+                                            <span th:errors="*{user}">User error</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="dueDate" class="form-label">Due Date</label>
+                                        <input type="datetime-local" class="form-control" id="dueDate" th:field="*{dueDate}">
+                                        <div class="form-text">Optional due date for the task.</div>
+                                        <div th:if="${#fields.hasErrors('dueDate')}" class="text-danger">
+                                            <span th:errors="*{dueDate}">Due date error</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

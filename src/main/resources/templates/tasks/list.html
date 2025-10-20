@@ -57,14 +57,6 @@
                             </option>
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label">&nbsp;</label>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-outline-primary">
-                                <i class="bi bi-funnel me-1"></i>Filter
-                            </button>
-                        </div>
-                    </div>
                 </form>
             </div>
         </div>
@@ -167,6 +159,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <form id="deleteForm" method="post" style="display: inline;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
                 </div>
@@ -180,6 +173,22 @@
                 document.getElementById('deleteForm').action = '/tasks/' + taskId + '/delete';
                 new bootstrap.Modal(document.getElementById('deleteModal')).show();
             }
+            
+            // Auto-filter functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const userIdSelect = document.getElementById('userId');
+                const statusSelect = document.getElementById('status');
+                const prioritySelect = document.getElementById('priority');
+                
+                function autoFilter() {
+                    const form = document.querySelector('form[method="get"]');
+                    form.submit();
+                }
+                
+                if (userIdSelect) userIdSelect.addEventListener('change', autoFilter);
+                if (statusSelect) statusSelect.addEventListener('change', autoFilter);
+                if (prioritySelect) prioritySelect.addEventListener('change', autoFilter);
+            });
         </script>
     </div>
 </body>
